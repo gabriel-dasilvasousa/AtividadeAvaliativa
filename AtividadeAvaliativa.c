@@ -4,16 +4,10 @@
 
 void imprimeMenuDeProdutos(){
   printf("Produtos disponíveis:\n");
-  printf("Cod Produto Preço\n");
-  printf("10 Regrigerante R$2,50\n");
-  printf("15 Casquinha Simples R$1,50\n");
-  printf("20 Casquinha Dupla R$2,50\n");
-}
-
-void verificaSeEstaCheio(int quantidadeDeVendas){
-  if(quantidadeDeVendas>=1000){
-    
-  }
+  printf("Cod Produto \t\t\tPreço\n");
+  printf("10 \tRegrigerante \t\tR$2,50\n");
+  printf("15 \tCasquinha Simples \tR$1,50\n");
+  printf("20 \tCasquinha Dupla \tR$2,50\n");
 }
 
 bool verificaEstoque(int estoqueDiario[2][2], int opcaoDeProduto, int quantidadeDesejada){
@@ -27,15 +21,20 @@ bool verificaEstoque(int estoqueDiario[2][2], int opcaoDeProduto, int quantidade
       return true;
     }
   }
+  
   else if(opcaoDeProduto == 15 || opcaoDeProduto == 20){
-    if(estoqueDiario[1][1] < quantidadeDesejada){
+    if(estoqueDiario[1][1] < quantidadeDesejada || (opcaoDeProduto==20 && estoqueDiario[1][1]<=1)){
       return false;
+    }
+    else if(opcaoDeProduto==20){
+      estoqueDiario[1][1] -= 2*quantidadeDesejada; 
     }
     else{
       estoqueDiario[1][1] -= quantidadeDesejada;
+    }
       return true;
     }
-  }
+  
   else{
     return false;
   }
@@ -47,12 +46,10 @@ void armazenar_Informações(int opcaoDeProduto, int quantidadeDesejada, int ven
   if(estoqueDisponivel){
     vendas[0][quantidadeDeVendas] = opcaoDeProduto;
     vendas[1][quantidadeDeVendas] = quantidadeDesejada;
-    printf("Venda armazenada");
-    printf("\e[H\e[2J");
+    printf("\nVenda armazenada\n\n");
   }
   else{
-    printf("estoque insuficiente");
-    printf("\e[H\e[2J");
+    printf("\nestoque insuficiente\n\n");
   }
   
 }
@@ -65,19 +62,20 @@ void emitirRelatorio(int vendas[2][1000]){
   for(int i=0;i<1000;i++){
     if(vendas[0][i] == 10){
       quantidadeDeRefrigerantes += vendas[1][i];
-      valorVendasRefrigerantes += quantidadeDeRefrigerantes*2.50;
+      valorVendasRefrigerantes = quantidadeDeRefrigerantes*2.50;
     }
     else if(vendas[0][i] == 15){
       quantidadeDeCasquinhasSimples += vendas[1][i];
-      valorVendasCasquinhasDuplas += quantidadeDeCasquinhasDuplas*1.50;
+      valorVendasCasquinhasSimples = quantidadeDeCasquinhasSimples*1.50;
     }
     else if(vendas[0][i] == 20){
       quantidadeDeCasquinhasDuplas += vendas[1][i];
-      valorVendasCasquinhasSimples += quantidadeDeCasquinhasSimples*2.50;
+      valorVendasCasquinhasDuplas = quantidadeDeCasquinhasDuplas*2.50;
     }
   }
 
   printf("\nExtrato do Dia:\n%d de Refrigerantes\n%d de Casquinhas Simples\n%d de Casquinhas Duplas\n", quantidadeDeRefrigerantes, quantidadeDeCasquinhasSimples, quantidadeDeCasquinhasDuplas);
+
   printf("\nValor total faturada em cada dia:\nR$%.2f Refrigerantes;\nR$%.2f Casquinhas Simples;\nR$%.2f Casquinhas Duplas\n", valorVendasRefrigerantes, valorVendasCasquinhasSimples, valorVendasCasquinhasDuplas);
   totalPago = valorVendasRefrigerantes+valorVendasCasquinhasSimples+valorVendasCasquinhasDuplas;
   printf("\nTotal (geral) arrecadado: R$%.2f\n", totalPago);
@@ -110,7 +108,7 @@ int main(void) {
 
   while(escolhaOpcaoDeAtividade!=2){
     
-    printf("======MENU======\n");
+    printf("=================MENU==============\n");
     printf("======Escolha uma das opções:======\n");
     printf("======1-Realizar nova venda======\n");
     printf("======2-Encerrar o Movimento do Dia======\n");
